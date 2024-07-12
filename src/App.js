@@ -1,27 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import SplitPane from "react-split-pane";
 import "./App.css";
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import StrikethroughSIcon from "@mui/icons-material/StrikethroughS";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
-import ChecklistIcon from "@mui/icons-material/Checklist";
-import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
-import CodeIcon from "@mui/icons-material/Code";
-import TableViewIcon from "@mui/icons-material/TableView";
-import InsertLinkIcon from "@mui/icons-material/InsertLink";
-import ImageIcon from "@mui/icons-material/Image";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { IconButton, Tooltip } from "@mui/material";
+import { actions } from "./data/actions";
 
 const App = () => {
   const [markdown, setMarkdown] = useState("");
   const textareaRef = useRef(null);
-  const previewRef = useRef(null);
 
   const handleMarkdownChange = (e) => {
     setMarkdown(e.target.value);
@@ -99,7 +87,7 @@ const App = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "document.md";
+    a.download = "Readme.md";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -108,78 +96,14 @@ const App = () => {
   return (
     <div className="App">
       <div className="toolbar">
-        <Tooltip title="Heading">
-          <IconButton onClick={() => insertMarkdownSyntax("# ")}>
-            <FormatColorTextIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Bold">
-          <IconButton onClick={() => insertMarkdownSyntax("**bold**")}>
-            <FormatBoldIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Italic">
-          <IconButton onClick={() => insertMarkdownSyntax("*italic")}>
-            <FormatItalicIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Strikethrough">
-          <IconButton onClick={() => insertMarkdownSyntax("~~strikethrough~~")}>
-            <StrikethroughSIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="List">
-          <IconButton onClick={() => insertMarkdownSyntax("- ")}>
-            <FormatListBulletedIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Numbered List">
-          <IconButton onClick={() => insertMarkdownSyntax("1. ")}>
-            <FormatListNumberedIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Task List">
-          <IconButton onClick={() => insertMarkdownSyntax("- [ ] Task")}>
-            <ChecklistIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Blockquote">
-          <IconButton onClick={() => insertMarkdownSyntax("> Blockquote")}>
-            <FormatQuoteIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Code">
-          <IconButton
-            onClick={() => insertMarkdownSyntax("```\nCode block\n```")}
-          >
-            <CodeIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Table">
-          <IconButton
-            onClick={() =>
-              insertMarkdownSyntax(
-                "| Header 1 | Header 2 |\n| --- | --- |\n| --- | --- |\n| --- | --- |"
-              )
-            }
-          >
-            <TableViewIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Link">
-          <IconButton onClick={() => insertMarkdownSyntax("[link text](url)")}>
-            <InsertLinkIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Image">
-          <IconButton
-            onClick={() =>
-              insertMarkdownSyntax("![enter image description here](image-url)")
-            }
-          >
-            <ImageIcon sx={{ fontSize: "24px" }} />
-          </IconButton>
-        </Tooltip>
+        {actions.map((action, index) => (
+          <Tooltip key={index} title={action.text}>
+            <IconButton onClick={() => insertMarkdownSyntax(action.syntax)}>
+              {action.icon}
+            </IconButton>
+          </Tooltip>
+        ))}
+
         <Tooltip title="Download MD File">
           <IconButton onClick={generateMarkdownFile}>
             <FileUploadIcon sx={{ fontSize: "24px" }} />
